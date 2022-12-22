@@ -1,22 +1,47 @@
-version: '3'
+version: "3.8"
 services:
-  php:
-    image: php:7-fpm
+  app:
+    build:
+      args:
+        user: '1012'
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: rss
+    container_name: rss-app
+    restart: unless-stopped
+    working_dir: /var/www/
     volumes:
-      - ./code:/code 
-  nginx:
-    image: nginx:latest
-    ports:
-      - 8080:80
-    volumes:
-      - ./site.conf:/etc/nginx/conf.d/site.conf
-      - ./code:/code
-  
+      - ./:/var/www
+    networks:
+      - rss
+
   db:
-    image: mysql:5.7
-    container_name: db
+    image: mysql:8.0
+    container_name: rss-db
+    restart: unless-stopped
     environment:
+      MYSQL_DATABASE: rss
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: php
-      MYSQL_USER: admin
       MYSQL_PASSWORD: password
+      MYSQL_USER: admin
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - rss
+
+  nginx:
+    image: nginx:alpine
+    container_name: rss-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - rss
+
+networks:
+  rss:
+    driver: bridge
