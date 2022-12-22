@@ -1,0 +1,22 @@
+version: '3'
+services:
+  php:
+    image: php:7-fpm
+    volumes:
+      - ./code:/code 
+  nginx:
+    image: nginx:latest
+    ports:
+      - 8080:80
+    volumes:
+      - ./site.conf:/etc/nginx/conf.d/site.conf
+      - ./code:/code
+  
+  db:
+    image: mysql:5.7
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: php
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
