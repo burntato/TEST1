@@ -2,6 +2,9 @@ version: '3'
 
 services:
   php-fpm:
+    database:
+      build:
+        context: ./database
 
   nginx:
     build:
