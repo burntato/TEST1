@@ -34,22 +34,3 @@ RUN mkdir -p /home/$user/.composer && \
 WORKDIR /var/www
 
 USER $user
-
-
-# this is the docker file for native php project with httpd without laravel
-
-FROM httpd:2.4
-
-# Copy apache vhost file to proxy php requests to php-fpm container
-COPY ./docker/apache/vhost.conf /usr/local/apache2/conf/vhost.conf
-
-# Enable rewrite
-RUN sed -i 's/#LoadModule rewrite_module/LoadModule rewrite_module/g' /usr/local/apache2/conf/httpd.conf
-
-# Enable vhost
-RUN sed -i 's/#Include conf\/vhost.conf/Include conf\/vhost.conf/g' /usr/local/apache2/conf/httpd.conf
-
-# Copy source code
-COPY . /var/www/html
-
-# Change current user to www
