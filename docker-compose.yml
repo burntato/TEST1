@@ -4,7 +4,7 @@ services:
   php-fpm:
     database:
       build:
-        context: ./database
+        context: ../database
 
   nginx:
     build:
@@ -22,7 +22,7 @@ services:
 
   database:
     build:
-      context: ./database
+      context: ../database
     environment:
       - MYSQL_DATABASE=php
       - MYSQL_USER=admin
